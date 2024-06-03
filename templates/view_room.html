@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Chat App</title>
+    <link rel="stylesheet" href="/static/room_styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome to Chat Room: {{ room.name }}</h1>
+        </header>
+        <button type="button" id="load_older_messages_btn" class="btn">Load Older Messages</button>
+        <div id="messages" class="messages">
+            {% for message in messages %}
+            <div class="message"><b>{{ message.sender }}&nbsp;[{{ message.created_at }}]:&nbsp;</b>{{ message.text }}</div>
+            {% endfor %}
+        </div>
+        <form id="message_input_form" class="message-form">
+            <input type="text" id="message_input" placeholder="Enter Your Message: " class="message-input">
+            <button type="submit" class="btn">Send</button>
+        </form>
+        <ul class="member-list">
+            {% for member in room_members %}
+            <li>{{ member._id.username }}</li>
+            {% endfor %}
+        </ul>
+        <a href="/rooms/{{ room._id }}/edit"><button>Edit Room</button></a>
+
+    </div>
+
+    <script src="></script>
+    <script>
+        const socket = io.connect("http://127.0.0.1:5000");
+        socket.on('connect', function () {
+            socket.emit('join_room', {
+                username: "{{ username }}",
+                room: "{{ room._id }}"
+            });
+            let message_input = document.getElementById('message_input')
+            document.getElementById('message_input_form').onsubmit = function (e) {
+                e.preventDefault();
+                let message = message_input.value.trim();
+                if (message.length) {
+                    socket.emit('send_message', {
+                        username: "{{ username }}",
+                        room: "{{ room._id }}",
+                        message: message
+                    })
+                }
+                message_input.value= '';
+                message_input.focus();    
+            }
+        });
+
+        let page = 0;
+
+        document.getElementById("load_older_messages_btn").onclick = (e)=> {
+            page += 1
+            fetch("/rooms/{{ room._id }}/messages?page=" + page, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => {
+                response.json().then(messages => {
+                    messages.reverse().forEach(message => prepend_message(message.text, message.sender, message.created_at));
+                })
+            })
+        }
+
+        function prepend_message(message, username, created_at){
+            const newNode = document.createElement('div');
+            newNode.classList.add('message');
+            newNode.innerHTML = `<b>${username}&nbsp;[${created_at}]:&nbsp;</b>${message}`;
+            const messages_div = document.getElementById('messages');
+            messages_div.insertBefore(newNode, messages_div.firstChild);
+        }
+
+        window.onbeforeunload = function () {
+            socket.emit('leave_room', {
+                username: "{{ username }}",
+                room: "{{ room._id }}"
+            })
+        };
+
+        socket.on('receive_message', function (data) {
+            console.log(data);
+            const newNode = document.createElement('div');
+            newNode.classList.add('message');
+            newNode.innerHTML = `<b>${data.username}&nbsp;[${data.created_at}]:&nbsp;</b>${data.message}`;
+            document.getElementById('messages').appendChild(newNode);
+        });
+
+        socket.on('join_room_announcement', function(data){
+            console.log(data);
+            const newNode = document.createElement('div');
+            newNode.classList.add('announcement');
+            newNode.innerHTML = `<b>${data.username}</b> has joined the room`;
+            document.getElementById('messages').appendChild(newNode);
+        });
+
+        socket.on('leave_room_announcement', function(data){
+            console.log(data);
+            const newNode = document.createElement('div');
+            newNode.classList.add('announcement');
+            newNode.innerHTML = `<b>${data.username}</b> has left the room`;
+            document.getElementById('messages').appendChild(newNode);
+        })
+    </script>
+</body>
+</html>

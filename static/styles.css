@@ -1,0 +1,72 @@
+/* styles.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    padding: 30px;
+    text-align: center;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #333333;
+    margin: 0;
+    font-size: 26px;
+}
+
+.welcome {
+    margin-bottom: 20px;
+}
+
+.room-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.room-list li {
+    margin: 10px 0;
+}
+
+.room-list a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.room-list a:hover {
+    text-decoration: underline;
+}
+
+.actions {
+    margin-top: 20px;
+}
+
+button.btn {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 5px;
+}
+
+button.btn:hover {
+    background-color: #0056b3;
+}

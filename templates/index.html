@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Chat App</h1>
+        </header>
+        <div class="welcome">
+            <h3>Hi {% if current_user.is_authenticated %} {{ current_user.username }}{% else %}Guest{% endif %}!</h3>
+        </div>
+        <div class="room-list">
+            <ul>
+                {% for room in rooms %}
+                <li><a href="/rooms/{{ room._id.room_id }}">{{ room.room_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="actions">
+            {% if not current_user.is_authenticated %}
+            <a href="/signup"><button class="btn">Sign Up</button></a>
+            <a href="/login"><button class="btn">Login</button></a>
+            {% else %}
+            <a href="/create-room"><button class="btn">Create a room to chat</button></a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+

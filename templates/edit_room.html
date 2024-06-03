@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Chat App</title>
+    <link rel="stylesheet" href="/static/edit_room_styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Edit Room</h1>
+        </header>
+        <h3>{{ message }}</h3>
+        <form method="post" class="edit-room-form">
+            <label for="room_name">Room Name</label>
+            <input type="text" name="room_name" value="{{ room.name }}" id="room_name" class="input-field">
+            <br>
+            <label for="members">Members</label>
+            <input type="text" name="members" value="{{ room_members_str }}" id="members" class="input-field">
+            <br>
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
+
